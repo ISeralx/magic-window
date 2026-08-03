@@ -15,6 +15,8 @@ Because one reference lives in USDT and the other in dollars, they disagree by a
 the **USDT/USD stablecoin basis**. It is *signed* and *forecastable* **before the hour resolves**, from one
 public number: the USDT/USD rate.
 
+**Live interactive explainer:** https://iseralx.github.io/magic-window/
+
 This repository reproduces the paper's headline on **1,350 settled hourly BTC markets (26 May – 23 Jul 2026)**,
 scoring every outcome on **Kalshi's real published settlement** — not a reconstructed price.
 
