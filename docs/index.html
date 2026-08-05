@@ -330,7 +330,7 @@
       </div>
       <div class="presets" id="sim_horizons">
         <button class="preset hz" data-h="sample" aria-pressed="true">Full capture · 78&nbsp;h</button>
-        <button class="preset hz" data-h="week" aria-pressed="false">Per week</button>
+        <button class="preset hz" data-h="week" aria-pressed="false">Per week · extrapolated</button>
         <button class="preset hz" data-h="month" aria-pressed="false">Per month · extrapolated</button>
       </div>
       <div class="verdict"><span class="big" id="sim_head" style="color:var(--green)">—</span><span class="legs" id="sim_headsub"></span></div>
@@ -685,7 +685,7 @@ addEventListener('scroll',()=>hud.classList.toggle('on',scrollY>60),{passive:tru
     // window = [sig, depth, fee, slot]
     var base=D.windows.filter(function(w){return w[0]<=th;});
     if(!base.length) return {empty:true};
-    var mult = horizon==='week'? avgWk/CH : horizon==='month'? (720/CH) : 1;
+    var mult = horizon==='week'? (168/CH) : horizon==='month'? (720/CH) : 1;   // 24/7 extrapolation: 168 h / 720 h
     var eff=[];  // [pr placeholder handled below] we keep [sig,dep,fee,slotkey]
     if(mult<=1){
       var m=Math.max(1,Math.round(base.length*mult));
@@ -742,7 +742,7 @@ addEventListener('scroll',()=>hud.classList.toggle('on',scrollY>60),{passive:tru
     c.fillStyle=DIM;c.font='10.5px '+MONOF;c.textAlign='center';
     c.fillText('your money over the '+(horizon==='week'?'week':horizon==='month'?'month':'78 h')+'   ·   each thin line = one possible run   ·   bold = average',pl+iw/2,h-9);
   }
-  function hLabel(){return horizon==='week'?'a week':horizon==='month'?'a month (extrapolated)':'the 78 h capture';}
+  function hLabel(){return horizon==='week'?'a week (extrapolated)':horizon==='month'?'a month (extrapolated)':'the 78 h capture';}
   var raf=null;
   function update(){
     document.getElementById('sim_thlab').textContent=th.toFixed(2);
