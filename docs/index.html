@@ -701,19 +701,21 @@ addEventListener('scroll',()=>hud.classList.toggle('on',scrollY>60),{passive:tru
       cap+=pr*w[0]; ev+=pr*(1+P_MW-w[0]-w[2]); pw.push([pr,co,w[3]]); slots[w[3]]=1;}
     var slk=Object.keys(slots);
     var N= eff.length>2000?300: eff.length>800?600:1200;
-    var totals=[],mdds=[];
+    var SP=9;  // sample equity paths kept for the chart
+    var totals=[],mdds=[],paths=[];
     for(var t=0;t<N;t++){
       var out={}; for(var s=0;s<slk.length;s++) out[slk[s]]=(Math.random()<P_MW?2:1);   // one settlement per slot (correlated)
-      var pnl=0,peak=0,mdd=0;
-      for(var i=0;i<pw.length;i++){var d=pw[i]; pnl+=out[d[2]]*d[0]-d[1]; if(pnl>peak)peak=pnl; if(peak-pnl>mdd)mdd=peak-pnl;}
-      totals.push(pnl*scale); mdds.push(mdd*scale);
+      var pnl=0,peak=0,mdd=0,path=(t<SP?[]:null);
+      for(var i=0;i<pw.length;i++){var d=pw[i]; pnl+=out[d[2]]*d[0]-d[1]; if(pnl>peak)peak=pnl; if(peak-pnl>mdd)mdd=peak-pnl; if(path)path.push(pnl*scale);}
+      totals.push(pnl*scale); mdds.push(mdd*scale); if(path)paths.push(path);
     }
+    var exp=[],cc=0; for(var i=0;i<pw.length;i++){ cc+=(pw[i][0]*(1+P_MW)-pw[i][1]); exp.push(cc*scale); }  // average path
     ev*=scale; cap*=scale;
     totals.sort(function(a,b){return a-b}); mdds.sort(function(a,b){return a-b});
     var mean=0,wins=0,ddm=0;
     for(var i=0;i<totals.length;i++){mean+=totals[i]; if(totals[i]>0)wins++; ddm+=mdds[i];}
     mean/=totals.length; ddm/=mdds.length;
-    return {totals:totals,ev:ev,mean:mean,pw:100*wins/totals.length,dd:ddm,cap:cap,nwin:base.length,nslot:slk.length};
+    return {totals:totals,paths:paths,exp:exp,ev:ev,mean:mean,pw:100*wins/totals.length,dd:ddm,cap:cap,nwin:base.length,nslot:slk.length};
   }
   function draw(R){
     var dpr=Math.min(window.devicePixelRatio||1,2);
@@ -721,20 +723,24 @@ addEventListener('scroll',()=>hud.classList.toggle('on',scrollY>60),{passive:tru
     el.width=w*dpr; el.height=h*dpr; el.style.height=h+'px';
     var c=el.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,w,h);
     if(!R||R.empty){c.fillStyle=DIM;c.font='13px '+MONOF;c.textAlign='center';c.fillText('No windows that cheap in the capture — raise the entry limit.',w/2,h/2);return;}
-    var T=R.totals,lo=T[0],hi=T[T.length-1]; if(hi-lo<1)hi=lo+1;
-    var pl=14,pr=14,pt=22,pb=26, iw=w-pl-pr, ih=h-pt-pb, bins=46;
-    var hist=new Array(bins).fill(0);
-    for(var i=0;i<T.length;i++){var b=Math.min(bins-1,Math.floor((T[i]-lo)/(hi-lo)*bins)); hist[b]++;}
-    var mx=Math.max.apply(null,hist)||1;
-    var X=function(v){return pl+(v-lo)/(hi-lo)*iw;};
-    for(var b=0;b<bins;b++){var x0=pl+b/bins*iw, ww=iw/bins-1, yy=pt+ih*(1-hist[b]/mx), center=lo+(b+0.5)/bins*(hi-lo);
-      c.fillStyle = center<0? 'rgba(229,72,77,.6)':'rgba(53,201,122,.62)'; c.fillRect(x0,yy,ww,pt+ih-yy);}
-    if(lo<0&&hi>0){c.strokeStyle=INK;c.globalAlpha=.45;c.lineWidth=1;c.beginPath();c.moveTo(X(0),pt);c.lineTo(X(0),pt+ih);c.stroke();c.globalAlpha=1;}
-    c.strokeStyle=AM;c.lineWidth=2;c.beginPath();c.moveTo(X(R.mean),pt-4);c.lineTo(X(R.mean),pt+ih);c.stroke();
-    c.fillStyle=AM;c.font='11px '+MONOF;c.textAlign='center';c.fillText('EV '+fmt(R.mean),X(R.mean),pt-8);
-    c.fillStyle=DIM;c.font='10px '+MONOF;c.textAlign='left';c.fillText(fmt(lo),pl,h-9);
-    c.textAlign='right';c.fillText(fmt(hi),w-pr,h-9);
-    c.textAlign='center';c.fillText('realised P&L across '+T.length+' simulated runs',pl+iw/2,h-9);
+    var paths=R.paths, exp=R.exp, npt=exp.length, i, p;
+    var lo=0,hi=0;
+    for(p=0;p<paths.length;p++)for(i=0;i<paths[p].length;i++){var v=paths[p][i]; if(v<lo)lo=v; if(v>hi)hi=v;}
+    for(i=0;i<exp.length;i++){if(exp[i]<lo)lo=exp[i]; if(exp[i]>hi)hi=exp[i];}
+    if(hi-lo<1)hi=lo+1;
+    var pl=58,pr=14,pt=16,pb=28, iw=w-pl-pr, ih=h-pt-pb;
+    var X=function(k){return pl+(npt<=1?0.5*iw:k/(npt-1)*iw);};
+    var Y=function(vv){return pt+ih*(1-(vv-lo)/(hi-lo));};
+    c.strokeStyle='rgba(255,255,255,.28)';c.lineWidth=1;c.beginPath();c.moveTo(pl,Y(0));c.lineTo(w-pr,Y(0));c.stroke();
+    c.fillStyle=DIM;c.font='10.5px '+MONOF;c.textAlign='right';c.fillText('$0',pl-7,Y(0)+3);c.fillText(fmt(hi),pl-7,pt+8);
+    for(p=0;p<paths.length;p++){var Pa=paths[p];
+      c.strokeStyle=(Pa[Pa.length-1]>=0?'rgba(53,201,122,.30)':'rgba(229,72,77,.42)');c.lineWidth=1;c.beginPath();
+      for(i=0;i<Pa.length;i++){var x=X(i),y=Y(Pa[i]);i?c.lineTo(x,y):c.moveTo(x,y);}c.stroke();}
+    c.strokeStyle=AM;c.lineWidth=2.4;c.beginPath();
+    for(i=0;i<exp.length;i++){var x2=X(i),y2=Y(exp[i]);i?c.lineTo(x2,y2):c.moveTo(x2,y2);}c.stroke();
+    c.fillStyle=AM;c.font='11px '+MONOF;c.textAlign='right';c.fillText('average '+fmt(exp[exp.length-1]),w-pr,Y(exp[exp.length-1])-7);
+    c.fillStyle=DIM;c.font='10.5px '+MONOF;c.textAlign='center';
+    c.fillText('your money over the '+(horizon==='week'?'week':horizon==='month'?'month':'78 h')+'   ·   each thin line = one possible run   ·   bold = average',pl+iw/2,h-9);
   }
   function hLabel(){return horizon==='week'?'a week':horizon==='month'?'a month (extrapolated)':'the 78 h capture';}
   var raf=null;
