@@ -726,7 +726,7 @@ addEventListener('scroll',()=>hud.classList.toggle('on',scrollY>60),{passive:tru
       cap+=pr*w[0]; ev+=pr*(1+P_MW-w[0]-w[2]); pw.push([pr,co,w[3]]); slots[w[3]]=1;}
     var slk=Object.keys(slots);
     var N= eff.length>2000?300: eff.length>800?600:1200;
-    var SP=9;  // sample equity paths kept for the chart
+    var SP=80;  // sample runs kept, for the percentile band
     var totals=[],mdds=[],paths=[];
     for(var t=0;t<N;t++){
       var out={}; for(var s=0;s<slk.length;s++) out[slk[s]]=(Math.random()<P_MW?2:1);   // one settlement per slot (correlated)
@@ -748,9 +748,16 @@ addEventListener('scroll',()=>hud.classList.toggle('on',scrollY>60),{passive:tru
     el.width=w*dpr; el.height=h*dpr; el.style.height=h+'px';
     var c=el.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,w,h);
     if(!R||R.empty){c.fillStyle=DIM;c.font='13px '+MONOF;c.textAlign='center';c.fillText('No windows that cheap in the capture — raise the entry limit.',w/2,h/2);return;}
-    var paths=R.paths, exp=R.exp, npt=exp.length, i, p;
+    var paths=R.paths, exp=R.exp, npt=exp.length, i, p, K=paths.length;
+    // per-step 10th/90th percentile band across the sample runs
+    var bLo=new Array(npt), bHi=new Array(npt), col=new Array(K);
+    for(i=0;i<npt;i++){
+      for(p=0;p<K;p++) col[p]=paths[p][i];
+      col.sort(function(a,b){return a-b});
+      bLo[i]=col[Math.floor(0.10*(K-1))]; bHi[i]=col[Math.ceil(0.90*(K-1))];
+    }
     var lo=0,hi=0;
-    for(p=0;p<paths.length;p++)for(i=0;i<paths[p].length;i++){var v=paths[p][i]; if(v<lo)lo=v; if(v>hi)hi=v;}
+    for(i=0;i<npt;i++){ if(bLo[i]<lo)lo=bLo[i]; if(bHi[i]>hi)hi=bHi[i]; }
     for(i=0;i<exp.length;i++){if(exp[i]<lo)lo=exp[i]; if(exp[i]>hi)hi=exp[i];}
     if(hi-lo<1)hi=lo+1;
     var pl=58,pr=14,pt=16,pb=28, iw=w-pl-pr, ih=h-pt-pb;
@@ -758,16 +765,22 @@ addEventListener('scroll',()=>hud.classList.toggle('on',scrollY>60),{passive:tru
     var Y=function(vv){return pt+ih*(1-(vv-lo)/(hi-lo));};
     c.strokeStyle='rgba(255,255,255,.28)';c.lineWidth=1;c.beginPath();c.moveTo(pl,Y(0));c.lineTo(w-pr,Y(0));c.stroke();
     c.fillStyle=DIM;c.font='10.5px '+MONOF;c.textAlign='right';c.fillText('$0',pl-7,Y(0)+3);c.fillText(fmt(hi),pl-7,pt+8);
-    for(p=0;p<paths.length;p++){var Pa=paths[p];
-      c.strokeStyle=(Pa[Pa.length-1]>=0?'rgba(53,201,122,.30)':'rgba(229,72,77,.42)');c.lineWidth=1;c.beginPath();
-      for(i=0;i<Pa.length;i++){var x=X(i),y=Y(Pa[i]);i?c.lineTo(x,y):c.moveTo(x,y);}c.stroke();}
-    c.strokeStyle=AM;c.lineWidth=2.4;c.beginPath();
+    // shaded 10-90% band
+    c.beginPath(); c.moveTo(X(0),Y(bLo[0]));
+    for(i=1;i<npt;i++) c.lineTo(X(i),Y(bLo[i]));
+    for(i=npt-1;i>=0;i--) c.lineTo(X(i),Y(bHi[i]));
+    c.closePath(); c.fillStyle='rgba(53,201,122,.15)'; c.fill();
+    c.strokeStyle='rgba(53,201,122,.35)';c.lineWidth=1;
+    c.beginPath(); for(i=0;i<npt;i++){var xh=X(i),yh=Y(bHi[i]); i?c.lineTo(xh,yh):c.moveTo(xh,yh);} c.stroke();
+    c.beginPath(); for(i=0;i<npt;i++){var xll=X(i),yll=Y(bLo[i]); i?c.lineTo(xll,yll):c.moveTo(xll,yll);} c.stroke();
+    // average line (bold)
+    c.strokeStyle=AM;c.lineWidth=2.6;c.beginPath();
     for(i=0;i<exp.length;i++){var x2=X(i),y2=Y(exp[i]);i?c.lineTo(x2,y2):c.moveTo(x2,y2);}c.stroke();
     c.fillStyle=AM;c.font='11px '+MONOF;c.textAlign='right';c.fillText('average '+fmt(exp[exp.length-1]),w-pr,Y(exp[exp.length-1])-7);
     c.fillStyle=DIM;c.font='10.5px '+MONOF;c.textAlign='center';
-    c.fillText('your money over the '+(horizon==='week'?'week':horizon==='month'?'month':(NCH+' h'))+'   ·   each thin line = one possible run   ·   bold = average',pl+iw/2,h-9);
+    c.fillText('your money over '+(horizon==='week'?'the week':horizon==='month'?'the month':('the '+NCH+' h'))+'   ·   shaded band = where ~80% of runs land   ·   bold = average',pl+iw/2,h-9);
   }
-  function hLabel(){return horizon==='week'?'a week (extrapolated)':horizon==='month'?'a month (extrapolated)':'the 78 h capture';}
+  function hLabel(){return horizon==='week'?'a week (extrapolated)':horizon==='month'?'a month (extrapolated)':('the '+NCH+' h capture');}
   var raf=null;
   function update(){
     document.getElementById('sim_thlab').textContent=th.toFixed(2);
