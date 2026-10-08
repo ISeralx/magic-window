@@ -19,7 +19,7 @@
     --bad:#d9785f;  --bad-dim:rgba(217,120,95,.13);
     /* legacy token names the drawings read (kept so the JS stays untouched) */
     --ink:var(--txt); --dim:var(--muted); --dim-2:var(--faint);
-    --amber:#ff6a2b; --blue:#d3d3d8; --green:#63a884; --red:#d9785f;
+    --amber:#ff6a2b; --feed2:#d3d3d8; --green:#63a884; --red:#d9785f;
     --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
     --sans:"Barlow","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
     --cond:"Barlow Semi Condensed","Barlow","Helvetica Neue",sans-serif;
@@ -32,45 +32,46 @@
     background-image:radial-gradient(ellipse 70% 40% at 50% -12%,rgba(255,106,43,.05),transparent 70%);
     background-repeat:no-repeat;}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
-  @media(max-width:640px){.wrap{padding:0 16px}}
+  @media(max-width:640px){.wrap{padding:0 16px}.scrollcue{left:16px}}
   .eyebrow{font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:var(--accent);font-weight:400}
   h1,h2,h3{font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.01em;text-wrap:balance;margin:0}
   .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
   a{color:inherit;text-decoration:none}
 
   /* top bar */
-  .hud{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:14px 28px;flex-wrap:wrap;
-    padding:16px 32px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+  .hud{position:fixed;top:0;left:0;right:0;z-index:50;
+    padding:16px 0;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
     border-bottom:1px solid transparent;background:linear-gradient(180deg,rgba(10,10,11,.9),rgba(10,10,11,0));transition:border-color .3s,background .3s}
   .hud.on{border-color:var(--line);background:rgba(10,10,11,.88);backdrop-filter:blur(8px)}
+  .hud .wrap{display:flex;justify-content:space-between;align-items:center;gap:14px 28px;flex-wrap:wrap}
   .hud .back{color:var(--muted);transition:color .2s;white-space:nowrap}
   .hud .back:hover{color:var(--accent)}
   .hud .right{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
   .hud b{color:var(--txt);font-weight:600;letter-spacing:.3em;white-space:nowrap}
   .hud .tel{color:var(--faint);white-space:nowrap} .hud .tel span{color:var(--accent);font-family:var(--cond);font-weight:700;font-size:12px;letter-spacing:.08em}
-  @media(max-width:640px){.hud{padding:12px 16px;gap:6px 16px}.hud .right{gap:14px}}
+  @media(max-width:640px){.hud{padding:12px 0}.hud .wrap{gap:6px 16px}.hud .right{gap:14px}}
 
   /* hero */
   .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:120px 0 70px;overflow:hidden}
   .hero canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.55;z-index:0}
-  .hero .wrap{position:relative;z-index:1}
+  .hero .wrap{position:relative;z-index:1;width:100%}
   .hero h1{font-size:clamp(52px,12vw,128px);line-height:.92;margin:30px 0 0}
-  .hero .thesis{font-weight:200;font-size:clamp(20px,3.2vw,34px);letter-spacing:.01em;line-height:1.2;max-width:780px;margin:26px 0 0;color:var(--txt)}
+  .hero .thesis{font-weight:200;font-size:clamp(20px,3.2vw,34px);letter-spacing:.01em;line-height:1.2;max-width:720px;margin:26px 0 0;color:var(--txt)}
   .hero .thesis em{color:var(--accent);font-style:normal;font-weight:600}
-  .hero .sub{color:var(--muted);max-width:620px;margin:22px 0 0;font-size:clamp(15px,1.9vw,18px)}
-  .scrollcue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:1;
-    font-size:10.5px;letter-spacing:.3em;color:var(--faint);text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .hero .sub{color:var(--muted);max-width:720px;margin:22px 0 0;font-size:clamp(15px,1.9vw,18px)}
+  .scrollcue{position:absolute;bottom:26px;left:max(32px,calc(50% - 540px + 32px));z-index:1;
+    font-size:10.5px;letter-spacing:.3em;color:var(--faint);text-transform:uppercase;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
   .scrollcue .bar{width:1px;height:34px;background:linear-gradient(var(--faint),transparent);animation:drop 2.4s ease-in-out infinite}
   @keyframes drop{0%,100%{opacity:.3;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
 
   /* sections */
   section.mod{padding:96px 0;border-top:1px solid var(--line-soft)}
   @media(max-width:640px){section.mod{padding:64px 0}}
-  .lead{display:flex;flex-direction:column;gap:18px;max-width:64ch}
+  .lead{display:flex;flex-direction:column;gap:18px;max-width:720px}
   .modnum{font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:16px;margin-bottom:8px}
   .modnum::before{content:"";width:34px;height:1px;background:var(--accent);flex:0 0 auto}
   h2{font-size:clamp(30px,5.5vw,56px);line-height:1}
-  .lead p{color:var(--txt2);font-size:clamp(15.5px,1.9vw,17px);margin:0;max-width:62ch}
+  .lead p{color:var(--txt2);font-size:clamp(15.5px,1.9vw,17px);margin:0}
   .lead p strong{color:var(--txt);font-weight:600}
   .lead p em{color:var(--accent);font-style:normal;font-weight:500}
 
@@ -144,17 +145,16 @@
   .delta{font-size:13.5px;color:var(--muted);margin-top:22px;letter-spacing:.02em}
   .delta b{color:var(--good);font-weight:600} .delta .r{color:var(--bad)}
 
-  .kicker{font-family:var(--sans);font-size:clamp(22px,3.2vw,34px);line-height:1.25;max-width:26ch;font-weight:200;letter-spacing:.01em;margin-top:56px}
+  .kicker{font-family:var(--sans);font-size:clamp(22px,3.2vw,34px);line-height:1.25;max-width:720px;font-weight:200;letter-spacing:.01em;margin-top:56px}
   .kicker em{color:var(--accent);font-style:normal;font-weight:600}
-  .quiet{color:var(--txt2);font-size:16px;max-width:60ch;margin-top:22px}
+  .quiet{color:var(--txt2);font-size:16px;max-width:720px;margin-top:22px}
   .quiet b{color:var(--txt);font-weight:600}
 
   /* footer */
   footer{border-top:1px solid var(--line-soft);padding:70px 0 0;margin-top:40px}
-  .fgrid{display:grid;grid-template-columns:1.4fr 1fr;gap:40px}
-  @media(max-width:680px){.fgrid{grid-template-columns:1fr}}
+  .fgrid{display:grid;grid-template-columns:1fr;gap:44px;max-width:720px}
   footer h3{font-size:20px;margin-bottom:14px}
-  footer p{color:var(--txt2);font-size:14.5px;max-width:48ch;margin:0}
+  footer p{color:var(--txt2);font-size:14.5px;margin:0}
   .caniuse{font-size:11px;color:var(--faint);letter-spacing:.2em;text-transform:uppercase;margin-top:34px}
   .byline{font-size:11px;color:var(--faint);letter-spacing:.2em;text-transform:uppercase}
   .flinks{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 22px}
@@ -162,10 +162,10 @@
     border-radius:3px;padding:10px 15px;transition:.22s;display:inline-flex;gap:8px;align-items:center}
   .flinks a:hover{border-color:var(--accent);color:var(--accent)}
   .tag{display:inline-block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(255,106,43,.4);border-radius:2px;padding:5px 11px}
-  .sitefoot{margin-top:60px;padding:40px 0;border-top:1px solid var(--line-soft);display:flex;justify-content:space-between;align-items:center;gap:12px 24px;flex-wrap:wrap;text-align:center}
+  .sitefoot{margin-top:60px;padding:40px 0;border-top:1px solid var(--line-soft);display:flex;justify-content:space-between;align-items:center;gap:12px 24px;flex-wrap:wrap;text-align:left}
   .sitefoot span,.sitefoot a{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--faint)}
   .sitefoot a{transition:color .2s} .sitefoot a:hover{color:var(--accent)}
-  @media(max-width:640px){.sitefoot{justify-content:center}}
+  @media(max-width:640px){.sitefoot{flex-direction:column;align-items:flex-start}}
   .preset.hz[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:600}
   .preset.fm[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:600}
   .fmlab{font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;align-self:center;margin-right:2px}
@@ -177,10 +177,12 @@
 
 
 <div class="hud" id="hud">
-  <a class="back" href="https://iseralx.github.io/ISeralx/">← Alejandro Soler · Portfolio</a>
-  <div class="right">
-    <b>THE&nbsp;MAGIC&nbsp;WINDOW</b>
-    <span class="tel">USDT/USD&nbsp;<span id="tel">0.99908</span></span>
+  <div class="wrap">
+    <a class="back" href="https://iseralx.github.io/ISeralx/">← Alejandro Soler · Portfolio</a>
+    <div class="right">
+      <b>THE&nbsp;MAGIC&nbsp;WINDOW</b>
+      <span class="tel">USDT/USD&nbsp;<span id="tel">0.99908</span></span>
+    </div>
   </div>
 </div>
 
@@ -409,7 +411,7 @@ const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const MONO=cssv('--mono');
-const C={amber:cssv('--amber'),blue:cssv('--blue'),green:cssv('--green'),red:cssv('--red'),
+const C={amber:cssv('--amber'),feed2:cssv('--feed2'),green:cssv('--green'),red:cssv('--red'),
   ink:cssv('--ink'),dim:cssv('--dim'),line:cssv('--line-2'),dim2:cssv('--dim-2'),bg:cssv('--bg')};
 const usd=n=>'$'+Math.round(n).toLocaleString('en-US');
 function fit(cv,h){const dpr=Math.min(devicePixelRatio||1,2);const w=cv.clientWidth||cv.parentElement.clientWidth;
@@ -423,7 +425,7 @@ function walkTo(n,target,seed,vol){const r=rng(seed);const bumps=[];
 /* ---------- HERO ambient ---------- */
 (function(){const cv=document.getElementById('heroCanvas');let t=0;
   function draw(){const {ctx,w,h}=fit(cv,cv.parentElement.clientHeight);const midY=h*.62,off=Math.min(h*.13,72),N=90;
-    for(let leg=0;leg<2;leg++){const col=leg?C.blue:C.amber,base=midY+(leg?off/2:-off/2);ctx.beginPath();
+    for(let leg=0;leg<2;leg++){const col=leg?C.feed2:C.amber,base=midY+(leg?off/2:-off/2);ctx.beginPath();
       for(let i=0;i<=N;i++){const x=i/N*w;const wob=Math.sin(i*.16+t*(leg?.7:1)+leg*2)*10+Math.sin(i*.05-t*.5)*16;const y=base+wob;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
       ctx.strokeStyle=col;ctx.globalAlpha=.85;ctx.lineWidth=1.6;ctx.stroke();ctx.globalAlpha=1;}}
   function loop(){t+=.012;draw();if(!RM)requestAnimationFrame(loop);}
@@ -441,20 +443,20 @@ function walkTo(n,target,seed,vol){const r=rng(seed);const bumps=[];
     ctx.strokeStyle=C.line;ctx.globalAlpha=.35;ctx.beginPath();ctx.moveTo(0,midY);ctx.lineTo(w,midY);ctx.stroke();ctx.globalAlpha=1;
     const yA=midY-gapPx/2,yB=midY+gapPx/2;
     function line(base,col){ctx.beginPath();for(let i=0;i<=N;i++){const x=i/N*w,yy=base+walk[i];i?ctx.lineTo(x,yy):ctx.moveTo(x,yy);}ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke();}
-    line(yA,C.amber);line(yB,C.blue);
+    line(yA,C.amber);line(yB,C.feed2);
     const gx=w*.5;ctx.strokeStyle=C.dim;ctx.setLineDash([3,4]);ctx.beginPath();ctx.moveTo(gx,yA+walk[60]);ctx.lineTo(gx,yB+walk[60]);ctx.stroke();ctx.setLineDash([]);
-    ctx.fillStyle=off>=0?C.amber:C.blue;ctx.font='600 14px '+MONO;ctx.textAlign='left';
+    ctx.fillStyle=off>=0?C.amber:C.feed2;ctx.font='600 14px '+MONO;ctx.textAlign='left';
     ctx.fillText((off>=0?'≈ +$':'≈ −$')+Math.abs(off).toFixed(0),gx+10,(yA+yB)/2+walk[60]+5);
     ctx.fillStyle=C.dim;ctx.font='11px '+MONO;ctx.fillText('BTC/USDT',12,yA+walk[0]-10);ctx.fillText('BTC/USD',12,yB+walk[0]+20);
     document.getElementById('g_btc').textContent=usd(price);document.getElementById('g_btclab').textContent=usd(price);
     document.getElementById('g_usdt').textContent=usdt.toFixed(5);document.getElementById('g_lab').textContent=usdt.toFixed(5);
     document.getElementById('g_off').textContent=(off>=0?'+$':'−$')+Math.abs(off).toFixed(0);
-    document.getElementById('g_off').style.color=off>=0?C.amber:C.blue;
+    document.getElementById('g_off').style.color=off>=0?C.amber:C.feed2;
     document.getElementById('tel').textContent=usdt.toFixed(5);
     const d=document.getElementById('g_dir');
     if(Math.abs(1-usdt)<0.00004){d.innerHTML='<span class="pill" style="color:'+C.dim+'">USDT ≈ $1 · no gap</span><span class="arrow">→</span> no edge either way';}
     else if(off>0){d.innerHTML='<span class="pill" style="color:'+C.amber+';border-color:'+C.amber+'">USDT &lt; $1 · Binance high</span><span class="arrow">→</span> buy <b style="color:'+C.ink+'">&nbsp;Up + No</b>&nbsp;, strike above the open';}
-    else{d.innerHTML='<span class="pill" style="color:'+C.blue+';border-color:'+C.blue+'">USDT &gt; $1 · Binance low</span><span class="arrow">→</span> it flips: buy <b style="color:'+C.ink+'">&nbsp;Down + Yes</b>&nbsp;, strike below the open';}
+    else{d.innerHTML='<span class="pill" style="color:'+C.feed2+';border-color:'+C.feed2+'">USDT &gt; $1 · Binance low</span><span class="arrow">→</span> it flips: buy <b style="color:'+C.ink+'">&nbsp;Down + Yes</b>&nbsp;, strike below the open';}
   }
   function stop(){sweeping=false;play.textContent='▶ auto-sweep';}
   play.addEventListener('click',()=>{ if(sweeping){stop();return;} sweeping=true;play.textContent='❚❚ stop'; });
@@ -507,21 +509,21 @@ function walkTo(n,target,seed,vol){const r=rng(seed);const bumps=[];
     const pay=(legA&&legB)?2:((!legA&&!legB)?0:1);
     // --- per-leg winning zones (each dot must land in its own colour) ---
     function band(pa,pb,col,al){const ya=P2Y(Math.max(pa,pb)),yb=P2Y(Math.min(pa,pb));ctx.fillStyle=col;ctx.globalAlpha=al;ctx.fillRect(padL,ya,w-padL-padR,yb-ya);ctx.globalAlpha=1;}
-    if(k.up){ band(0,hi,C.amber,.055); band(lo,S,C.blue,.055); band(0,S,C.green,.14); }
-    else    { band(lo,0,C.amber,.055); band(S,hi,C.blue,.055); band(S,0,C.green,.14); }
+    if(k.up){ band(0,hi,C.amber,.055); band(lo,S,C.feed2,.055); band(0,S,C.green,.14); }
+    else    { band(lo,0,C.amber,.055); band(S,hi,C.feed2,.055); band(S,0,C.green,.14); }
     ctx.textAlign='left';ctx.globalAlpha=.92;
     ctx.font='600 10.5px '+MONO;ctx.fillStyle=C.amber;
     ctx.fillText((k.up?'Polymarket Up wins  ↑':'Polymarket Down wins  ↓'),padL+9, P2Y(k.up?hi:lo)+(k.up?15:-7));
-    ctx.fillStyle=C.blue;
+    ctx.fillStyle=C.feed2;
     ctx.fillText((k.up?'Kalshi No wins  ↓':'Kalshi Yes wins  ↑'),padL+9, P2Y(k.up?lo:hi)+(k.up?-7:15));
     ctx.fillStyle=C.green;ctx.fillText('magic window · both win',padL+9,P2Y(S/2)+4);ctx.globalAlpha=1;
     // reference lines
     function href(p,col,lab){ctx.strokeStyle=col;ctx.globalAlpha=.9;ctx.setLineDash([5,4]);const y=P2Y(p);
       ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(w-padR,y);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;
       ctx.fillStyle=col;ctx.font='10.5px '+MONO;ctx.textAlign='right';ctx.fillText(lab,w-padR-2,y-5);}
-    href(0,C.amber,'open (Polymarket)');href(S,C.blue,'strike (Kalshi)');
+    href(0,C.amber,'open (Polymarket)');href(S,C.feed2,'strike (Kalshi)');
     // feeds + close dots with verdict rings
-    function feed(path,col,verdict){ctx.beginPath();for(let i=0;i<=iMax;i++){const wob=RM?0:Math.sin(i*.5+t+(col===C.blue?1.6:0))*1.2;const y=P2Y(path[i])+wob;i?ctx.lineTo(X(i),y):ctx.moveTo(X(i),y);}
+    function feed(path,col,verdict){ctx.beginPath();for(let i=0;i<=iMax;i++){const wob=RM?0:Math.sin(i*.5+t+(col===C.feed2?1.6:0))*1.2;const y=P2Y(path[i])+wob;i?ctx.lineTo(X(i),y):ctx.moveTo(X(i),y);}
       ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke();
       if(done){const cx=X(N),cy=P2Y(path[N]);
         ctx.beginPath();ctx.arc(cx,cy,5,0,7);ctx.fillStyle=col;ctx.fill();ctx.strokeStyle=C.bg;ctx.lineWidth=2;ctx.stroke();
@@ -529,7 +531,7 @@ function walkTo(n,target,seed,vol){const r=rng(seed);const bumps=[];
         ctx.beginPath();ctx.arc(cx,cy,9.5,0,7);ctx.strokeStyle=vc;ctx.lineWidth=2;ctx.stroke();
         ctx.fillStyle=vc;ctx.font='700 12px '+MONO;ctx.textAlign='left';ctx.fillText(verdict?'✓':'✕',cx+13,cy+4);}
     }
-    feed(bPath,C.amber,legA);feed(iPath,C.blue,legB);
+    feed(bPath,C.amber,legA);feed(iPath,C.feed2,legB);
     // locked vs crossover marker
     if(!reversal){
       const ax=X(8),y1=P2Y(bPath[8]),y2=P2Y(iPath[8]);
@@ -566,7 +568,7 @@ function walkTo(n,target,seed,vol){const r=rng(seed);const bumps=[];
     const dd=document.getElementById('w_dir');
     dd.innerHTML= k.up
       ? '<span class="pill" style="color:'+C.amber+';border-color:'+C.amber+'">USDT &lt; $1</span><span class="arrow">→</span> buy <b style="color:'+C.ink+'">&nbsp;Up + No</b>&nbsp;, strike above the open'
-      : '<span class="pill" style="color:'+C.blue+';border-color:'+C.blue+'">USDT &gt; $1 · mirror</span><span class="arrow">→</span> buy <b style="color:'+C.ink+'">&nbsp;Down + Yes</b>&nbsp;, strike below the open';
+      : '<span class="pill" style="color:'+C.feed2+';border-color:'+C.feed2+'">USDT &gt; $1 · mirror</span><span class="arrow">→</span> buy <b style="color:'+C.ink+'">&nbsp;Down + Yes</b>&nbsp;, strike below the open';
   }
   function loop(){t+=.05; if(playing){reveal=Math.min(1,reveal+0.011); if(reveal>=1){playing=false;play.textContent='▶ watch the hour';}} draw(); if(!RM)requestAnimationFrame(loop);}
   usdtSl.addEventListener('input',()=>{reveal=1;playing=false;}); strikeSl.addEventListener('input',()=>{reveal=1;playing=false;});
@@ -592,9 +594,9 @@ function walkTo(n,target,seed,vol){const r=rng(seed);const bumps=[];
     side=null;reveal=1;playing=false;
     bAbove.className='trybtn';bBelow.className='trybtn';bAbove.disabled=false;bBelow.disabled=false;
     vEl.className='tryverdict';vEl.innerHTML='Read the rate above, then pick the strike you’d trade.';
-    uEl.textContent=usdt.toFixed(5);uEl.style.color=up?C.amber:C.blue;
-    rEl.textContent=up?'HIGH · USDT < $1':'LOW · USDT > $1';rEl.style.color=up?C.amber:C.blue;
-    oEl.textContent=(signedOff>=0?'+$':'−$')+off.toFixed(0);oEl.style.color=up?C.amber:C.blue;
+    uEl.textContent=usdt.toFixed(5);uEl.style.color=up?C.amber:C.feed2;
+    rEl.textContent=up?'HIGH · USDT < $1':'LOW · USDT > $1';rEl.style.color=up?C.amber:C.feed2;
+    oEl.textContent=(signedOff>=0?'+$':'−$')+off.toFixed(0);oEl.style.color=up?C.amber:C.feed2;
     draw();
   }
   function outcome(){
@@ -629,26 +631,26 @@ function walkTo(n,target,seed,vol){const r=rng(seed);const bumps=[];
       ctx.fillStyle=col;ctx.font='10.5px '+MONO;ctx.textAlign='right';ctx.fillText(lab,w-padR-2,y-5);}
     if(!side){
       href(0,C.amber,'open (Polymarket)',[5,4]);
-      href(gap,C.blue,'strike ABOVE  (+$'+gap+')  → Up+No',[2,4]);
+      href(gap,C.feed2,'strike ABOVE  (+$'+gap+')  → Up+No',[2,4]);
       href(-gap,C.dim,'strike BELOW  (−$'+gap+')  → Down+Yes',[2,4]);
       ctx.fillStyle=C.dim2;ctx.font='11px '+MONO;ctx.textAlign='center';ctx.fillText('pick a side — then the hour plays out',w/2,h-10);
       return;
     }
     const oc=outcome(),sideUp=oc.sideUp,strike=oc.strike;
-    if(sideUp){band(0,hi,C.amber,.055);band(lo,strike,C.blue,.055);band(0,strike,C.green,.14);}
-    else{band(lo,0,C.amber,.055);band(strike,hi,C.blue,.055);band(strike,0,C.green,.14);}
+    if(sideUp){band(0,hi,C.amber,.055);band(lo,strike,C.feed2,.055);band(0,strike,C.green,.14);}
+    else{band(lo,0,C.amber,.055);band(strike,hi,C.feed2,.055);band(strike,0,C.green,.14);}
     ctx.textAlign='left';ctx.globalAlpha=.92;ctx.font='600 10.5px '+MONO;
     ctx.fillStyle=C.amber;ctx.fillText(sideUp?'Polymarket Up wins  ↑':'Polymarket Down wins  ↓',padL+9,P2Y(sideUp?hi:lo)+(sideUp?15:-7));
-    ctx.fillStyle=C.blue;ctx.fillText(sideUp?'Kalshi No wins  ↓':'Kalshi Yes wins  ↑',padL+9,P2Y(sideUp?lo:hi)+(sideUp?-7:15));
+    ctx.fillStyle=C.feed2;ctx.fillText(sideUp?'Kalshi No wins  ↓':'Kalshi Yes wins  ↑',padL+9,P2Y(sideUp?lo:hi)+(sideUp?-7:15));
     ctx.fillStyle=C.green;ctx.fillText('magic window · both',padL+9,P2Y(strike/2)+4);ctx.globalAlpha=1;
-    href(0,C.amber,'open',[5,4]);href(strike,C.blue,'strike',[5,4]);
+    href(0,C.amber,'open',[5,4]);href(strike,C.feed2,'strike',[5,4]);
     const iMax=Math.max(1,Math.round(reveal*N)),done=reveal>=0.999;
-    function feed(path,col,verdict){ctx.beginPath();for(let i=0;i<=iMax;i++){const wob=RM?0:Math.sin(i*.5+t+(col===C.blue?1.6:0))*1.1;const y=P2Y(path[i])+wob;i?ctx.lineTo(X(i),y):ctx.moveTo(X(i),y);}
+    function feed(path,col,verdict){ctx.beginPath();for(let i=0;i<=iMax;i++){const wob=RM?0:Math.sin(i*.5+t+(col===C.feed2?1.6:0))*1.1;const y=P2Y(path[i])+wob;i?ctx.lineTo(X(i),y):ctx.moveTo(X(i),y);}
       ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke();
       if(done){const cx=X(N),cy=P2Y(path[N]);ctx.beginPath();ctx.arc(cx,cy,5,0,7);ctx.fillStyle=col;ctx.fill();ctx.strokeStyle=C.bg;ctx.lineWidth=2;ctx.stroke();
         const vc=verdict?C.green:C.red;ctx.beginPath();ctx.arc(cx,cy,9.5,0,7);ctx.strokeStyle=vc;ctx.lineWidth=2;ctx.stroke();
         ctx.fillStyle=vc;ctx.font='700 12px '+MONO;ctx.textAlign='left';ctx.fillText(verdict?'✓':'✕',cx+13,cy+4);}}
-    feed(bPath,C.amber,oc.legA);feed(iPath,C.blue,oc.legB);
+    feed(bPath,C.amber,oc.legA);feed(iPath,C.feed2,oc.legB);
     ctx.fillStyle=C.dim2;ctx.font='10px '+MONO;ctx.textAlign='center';ctx.fillText('minutes into the hour',w/2,h-8);
     if(done&&!H.shown){
       H.shown=true;
@@ -694,7 +696,7 @@ const PTS=[[99,-76,1],[-324,-465,0],[-390,-577,0],[40,-161,1],[-623,-754,0],[-95
     ctx.strokeStyle=C.line;ctx.globalAlpha=.6;ctx.beginPath();ctx.moveTo(X(0),padT);ctx.lineTo(X(0),h-padB);ctx.moveTo(padL,Y(0));ctx.lineTo(w-padR,Y(0));ctx.stroke();ctx.globalAlpha=1;
     const shown=Math.round(prog*PTS.length);
     for(let i=0;i<shown;i++){const p=PTS[i];ctx.beginPath();ctx.arc(X(p[0]),Y(p[1]),2.4,0,7);
-      ctx.fillStyle=p[2]?C.green:C.blue;ctx.globalAlpha=p[2]?.75:.5;ctx.fill();}
+      ctx.fillStyle=p[2]?C.green:C.feed2;ctx.globalAlpha=p[2]?.75:.5;ctx.fill();}
     ctx.globalAlpha=1;
     ctx.fillStyle=C.red;ctx.font='700 12px '+MONO;ctx.textAlign='left';
     ctx.fillText('DOUBLE-LOSS corner',X(xmin)+12,Y(ymax)+20);
